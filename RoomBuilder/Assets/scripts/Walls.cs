@@ -13,6 +13,8 @@ public class Walls
     public GameObject extraWallA;
     public GameObject extraWallB;
     public bool isSideWall;
+    public GameObject TriangleOne;
+    public GameObject TriangleTwo;
 
     public static GameObject wallPre;
     public static Material mat1;
@@ -26,6 +28,7 @@ public class Walls
         ID = id;
         isSideWall = false;
     }
+
 
     public void changeMaterial(Material mat, Material sideMat)
     {
@@ -51,10 +54,7 @@ public class Walls
 
     void Start()
     {
-
         wallPre = wall;
         mat1 = mat;
     }
-
-
 }

@@ -22,12 +22,10 @@ public class changeTexture : MonoBehaviour
     RaycastHit findHit = new RaycastHit();
     Vector3 wallHit;
 
-
     void Start()
     {
         changeToMaterial = mat1;
     }
-
 
     public void toggleTexture()
     {
@@ -58,6 +56,7 @@ public class changeTexture : MonoBehaviour
                 wallconstruct.buildmode = true;
                 wallconstruct.onFloorCursor.SetActive(true);
             }
+            return;
         }
 
         if (wallconstruct.buildmode)
@@ -80,9 +79,7 @@ public class changeTexture : MonoBehaviour
                         Vector3 ls = findHit.transform.root.transform.localScale;
                         Vector2 texScale = new Vector2(1, ls.z / ls.x);
                         re.material.SetTextureScale("_MainTex", texScale);
-
                         isHovering = false;
-
                     }
                 }
             }
@@ -90,9 +87,7 @@ public class changeTexture : MonoBehaviour
             {
                 if (findHit.transform.tag == "front" || findHit.transform.tag == "back")
                 {
-
                     Renderer re = findHit.transform.gameObject.GetComponent<Renderer>();
-
                     if (re && !isHovering)
                     {
                         prevRe = re;
@@ -123,10 +118,8 @@ public class changeTexture : MonoBehaviour
                             prevRe.material.color = oldCol;
                             isHovering = false;
                         }
-
                     }
                 }
-
             }
         }
     }

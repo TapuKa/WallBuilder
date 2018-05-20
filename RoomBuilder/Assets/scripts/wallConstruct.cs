@@ -11,7 +11,6 @@ public class wallConstruct : MonoBehaviour
     Vector3 pointOnMesh;
     Vector3 pointStartClick;
     Vector3 pointm;
-    //   Vector3 prevPoint;
 
     public GameObject wallPrefab;
     public Material wallMat;
@@ -21,6 +20,7 @@ public class wallConstruct : MonoBehaviour
     public GameObject onWallCursor;
     public GameObject onFloorCursor;
     public GameObject cornerMarker;
+    public GameObject triangle;
 
     public GameObject extrapreViewsidewallA;
     public GameObject extrapreViewsidewallB;
@@ -32,7 +32,6 @@ public class wallConstruct : MonoBehaviour
     public Toggle textureTwoToggle;
     public Toggle appendToLast;
     static GameObject wallPre;
-    // static Material mat1;
     Vector3 offset;
     float newAlpha;
     float oldAlpha;
@@ -47,21 +46,15 @@ public class wallConstruct : MonoBehaviour
     GameObject previeWallCornerD;
 
     public furniturePlacer furnitureplacer;
-
-
     public bool buildmode = true;
 
     bool isFirstClick = true;
     bool isFirstNewWall = true;
-    //  bool isGround = false;
     bool isClickOnWall = false;
     bool isSideWall = false;
-    //  bool isSetAlpha = false;
     public bool isAppending = true;
 
     static int maxWalls = 1000;
-    //  private UnityEngine.EventSystems.EventSystem _eventSystem;
-
     int wallcount = 0;
 
     Walls[] wall = new Walls[maxWalls];
@@ -86,7 +79,6 @@ public class wallConstruct : MonoBehaviour
             textureOneToggle.isOn = true;
             textureTwoToggle.isOn = false;
         }
-
     }
 
     public void toggleappendToLast()
@@ -96,11 +88,70 @@ public class wallConstruct : MonoBehaviour
     void placeWall(Walls wl)
     {
         wl.endMarker = pointOnMesh;
-        //     wl.wall = Instantiate(wallPrefab, wl.startMarker, Quaternion.identity);
         wl.wall.transform.LookAt(wl.endMarker);
         Vector3 ls = wl.wall.transform.localScale;
         wl.wall.transform.localScale = new Vector3(ls.x, ls.y, Vector3.Distance(wl.startMarker, wl.endMarker));
         wallcount++;
+    }
+
+    void buildExtraSegments(int wc)
+    {
+        cornerA = wallTempPrefab.transform.Find("cornerPreA").gameObject;
+        cornerB = wallTempPrefab.transform.Find("cornerPreB").gameObject;
+        cornerC = wall[wallcount - 1].wall.transform.Find("cornerC").gameObject;
+        cornerD = wall[wallcount - 1].wall.transform.Find("cornerD").gameObject;
+
+        wall[wc].extraWallA = Instantiate(extrasidewallA, cornerA.transform.position, Quaternion.identity);
+        wall[wc].extraWallB = Instantiate(extrasidewallB, cornerB.transform.position, Quaternion.identity);
+
+        Renderer re = wall[wc].extraWallA.GetComponent<Renderer>();
+        re.material = wall[wc - 1].mat;
+        float extrascaleZ = Vector3.Distance(cornerA.transform.position, cornerC.transform.position);
+        Vector3 extrals = wall[wc].extraWallA.transform.localScale;
+        extrals.z = extrascaleZ;
+
+        wall[wc].extraWallA.transform.localScale = extrals;
+        wall[wc].extraWallA.transform.LookAt(cornerC.transform);
+
+        Vector2 texScale = new Vector2(1, extrals.z / extrals.x);
+        if (re.material.name == "wallMatTwo")
+        {
+            texScale.x = 2f;
+        }
+        re.material.SetTextureScale("_MainTex", texScale);
+        extrascaleZ = Vector3.Distance(cornerB.transform.position, cornerD.transform.position);
+        extrals = extrasidewallB.transform.localScale;
+        extrals.z = extrascaleZ;
+        re = wall[wc].extraWallB.GetComponent<Renderer>();
+        re.material = wall[wc - 1].mat;
+        wall[wc].extraWallB.transform.localScale = extrals;
+        wall[wc].extraWallB.transform.LookAt(cornerD.transform);
+        texScale = new Vector2(1, extrals.z / extrals.x);
+        if (re.material.name == "wallMatTwo")
+        {
+            texScale.x = 2f;
+        }
+        re.material.SetTextureScale("_MainTex", texScale);
+
+        wall[wc].TriangleOne = Instantiate(triangle, Vector3.zero, Quaternion.identity);
+        Mesh mesh = wall[wc].TriangleOne.GetComponent<MeshFilter>().mesh;
+
+        Vector3[] vertices = mesh.vertices;
+        vertices[0] = wall[wc].endMarker;
+        vertices[0].y = 2f;
+        vertices[1] = cornerA.transform.position;
+        vertices[2] = cornerC.transform.position;
+        mesh.vertices = vertices;
+        mesh.RecalculateBounds();
+
+        wall[wc].TriangleTwo = Instantiate(triangle, Vector3.zero, Quaternion.identity);
+        mesh = wall[wc].TriangleTwo.GetComponent<MeshFilter>().mesh;
+        vertices[0] = wall[wc].endMarker;
+        vertices[0].y = 2f;
+        vertices[1] = cornerD.transform.position;
+        vertices[2] = cornerB.transform.position;
+        mesh.vertices = vertices;
+        mesh.RecalculateBounds();
     }
 
     void buildWall(int wc, Vector3 pos)
@@ -132,53 +183,12 @@ public class wallConstruct : MonoBehaviour
         {
             if (!isFirstNewWall && !isClickOnWall && !isSideWall)  // es gibt bereits eine Wand, die mit neuem click verlaengert wird
             {
-                // pos = wall[wallcount - 1].endMarker;
-
                 wall[wc] = new Walls(wc, pos);
                 wall[wc].wall = Instantiate(wallPre, wall[wc].startMarker, Quaternion.identity);
 
-                if (wc > 1 && !wall[wallcount - 1].isSideWall)
+                if (wc > 0 && !wall[wallcount - 1].isSideWall)
                 {
-                    cornerC = wall[wallcount - 2].wall.transform.Find("cornerC").gameObject;
-                    cornerD = wall[wallcount - 2].wall.transform.Find("cornerD").gameObject;
-                    cornerA = wall[wallcount - 1].wall.transform.Find("cornerA").gameObject;
-                    cornerB = wall[wallcount - 1].wall.transform.Find("cornerB").gameObject;
-
-                    wall[wc].extraWallA = Instantiate(extrasidewallA, cornerA.transform.position, Quaternion.identity);
-
-                    wall[wc].extraWallB = Instantiate(extrasidewallB, cornerB.transform.position, Quaternion.identity);
-
-                    Renderer re = wall[wc].extraWallA.GetComponent<Renderer>();
-                    re.material = wall[wc - 1].mat;
-
-                    float extrascaleZ = Vector3.Distance(wall[wc].extraWallA.transform.position, cornerC.transform.position);
-                    Vector3 extrals = wall[wc].extraWallA.transform.localScale;
-                    extrals.z = extrascaleZ;
-
-                    wall[wc].extraWallA.transform.localScale = extrals;
-                    wall[wc].extraWallA.transform.LookAt(cornerC.transform);
-
-                    Vector2 texScale = new Vector2(1, extrals.z / extrals.x);
-                    if (re.material.name == "wallMatTwo")
-                    {
-                        texScale.x = 2f;
-                    }
-                    re.material.SetTextureScale("_MainTex", texScale);
-
-                    extrascaleZ = Vector3.Distance(wall[wc].extraWallB.transform.position, cornerD.transform.position);
-                    extrals = extrasidewallB.transform.localScale;
-                    extrals.z = extrascaleZ;
-                    re = wall[wc].extraWallB.GetComponent<Renderer>();
-                    re.material = wall[wc - 1].mat;
-                    wall[wc].extraWallB.transform.localScale = extrals;
-                    wall[wc].extraWallB.transform.LookAt(cornerD.transform);
-                    texScale = new Vector2(1, extrals.z / extrals.x);
-                    if (re.material.name == "wallMatTwo")
-                    {
-                        texScale.x = 2f;
-                    }
-                    re.material.SetTextureScale("_MainTex", texScale);
-
+                    buildExtraSegments(wc);
                 }
 
                 wall[wc].mat = wallMat;
@@ -186,10 +196,6 @@ public class wallConstruct : MonoBehaviour
                 placeWall(wall[wc]);
                 wall[wc].angle = wall[wc].wall.transform.eulerAngles.y;
                 wall[wc].changeMaterial(wallMat, wallSidesMat);
-
-
-
-
             }
         }
 
@@ -271,8 +277,6 @@ public class wallConstruct : MonoBehaviour
                     wallTempPrefab.SetActive(true);
                 }
             }
-
-
         }
         else
         {
@@ -286,8 +290,8 @@ public class wallConstruct : MonoBehaviour
                 wallTempPrefab.SetActive(true);
             }
         }
-
     }
+
     void showCursor(Vector3 pos, GameObject cursor)
     {
         cursor.transform.position = pos;
@@ -333,8 +337,7 @@ public class wallConstruct : MonoBehaviour
                     {
                         pointStartClick = pointOnMesh;
                         buildWall(wallcount, pointOnMesh);
-                    }
-                    //                  isGround = true;
+                    }                   
                 }
                 else
                 if (findHit.transform.tag == "front" || findHit.transform.tag == "back" || findHit.transform.tag == "side")
@@ -343,7 +346,6 @@ public class wallConstruct : MonoBehaviour
                     pointStartClick = pointOnMesh;
                     buildWall(wallcount, pointStartClick);
                     wallTempPrefab.SetActive(false);
-
                 }
             }
             if (Input.GetMouseButtonUp(0))
@@ -354,12 +356,9 @@ public class wallConstruct : MonoBehaviour
                     {
                         if (isAppending)
                             buildWall(wallcount, wall[wallcount - 1].endMarker);
-
-
                     }
                     else
                         buildWall(wallcount, pointStartClick);
-
                 }
                 if (isSideWall)                                     //neue Wand an dieSeite einer beliebig  bestehenden
                 {
@@ -381,7 +380,6 @@ public class wallConstruct : MonoBehaviour
                     //                   prevPoint = pointOnMesh;
                     if (isAppending || isSideWall)
                     {
-
                         extrapreViewsidewallA.transform.position = wallTempPrefab.transform.Find("cornerPreA").gameObject.transform.position;
                         extrapreViewsidewallB.transform.position = wallTempPrefab.transform.Find("cornerPreB").gameObject.transform.position;
                         previewWall(wall[wallcount - 1].endMarker, offset);
@@ -422,7 +420,6 @@ public class wallConstruct : MonoBehaviour
                 onWallCursor.SetActive(true);
                 showCursor(pointOnMesh, onWallCursor);
             }
-
         }
     }
 }
