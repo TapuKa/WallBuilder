@@ -27,7 +27,7 @@ public class changeTexture : MonoBehaviour
         changeToMaterial = mat1;
     }
 
-    public void toggleTexture()
+    public void ToggleTexture()
     {
         if (textureToggleOne.isOn)
         {
@@ -68,6 +68,7 @@ public class changeTexture : MonoBehaviour
 
         if (Physics.Raycast(ray.origin, ray.direction, out findHit))
         {
+            Cursor.visible = true;
             if (Input.GetMouseButtonDown(0))
             {
                 if (findHit.transform.tag == "front" || findHit.transform.tag == "back")

@@ -10,7 +10,7 @@ public class furniturePlacer : MonoBehaviour
 
     public GameObject onFloorCursor;
     public GameObject furniture;
-    public wallConstruct walconstruct;
+    public wallConstruct wallconstruct;
     float rot;
     float speed = 200;
     public Toggle toggleFurniture;
@@ -18,52 +18,35 @@ public class furniturePlacer : MonoBehaviour
     bool isColliding;
     public bool furnitureMode;
     Color colTemp;
-
-
-
     RaycastHit findHit = new RaycastHit();
     Vector3 pointOnMesh;
 
-    void placeFurniture(Vector3 pos, GameObject furniture)
+    void PlaceFurniture(Vector3 pos, GameObject furniture)
     {
         furniture.transform.position = new Vector3(Mathf.Lerp(furniture.transform.position.x, pos.x, 1), 0, Mathf.Lerp(furniture.transform.position.z, pos.z, 1));
-        //furniture.transform.position = pos;
     }
 
-    public void toggleFurnitureMode()
+    public void ToggleFurnitureMode()
     {
         isPlacingToogle = toggleFurniture.isOn;
         if (isPlacingToogle)
         {
-            walconstruct.buildmode = false;
+            wallconstruct.buildmode = false;
             furniture.SetActive(true);
             furnitureMode = true;
         }
         else
         {
-            walconstruct.buildmode = true;
+            wallconstruct.buildmode = true;
             furniture.SetActive(false);
             furnitureMode = false;
-
         }
 
     }
-
-    // Use this for initialization
-    void Start()
-    {
-      //  onFloorCursor.SetActive(true);
-    }
-
-    // Update is called once per frame
-
-
-  
-
     void Update()
     {
 
-        if (!furnitureMode ||  walconstruct.buildmode || EventSystem.current.IsPointerOverGameObject()) //Cursor ueber UI
+        if (!furnitureMode || wallconstruct.buildmode || EventSystem.current.IsPointerOverGameObject()) //Cursor ueber UI
         {
 
             furniture.SetActive(false);
@@ -76,13 +59,16 @@ public class furniturePlacer : MonoBehaviour
         }
         furniture.SetActive(true);
 
+        Cursor.visible = false;
+        
+
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray.origin, ray.direction, out findHit))
         {
             pointOnMesh = findHit.point;
             pointOnMesh.y = 0.01f;
-            placeFurniture(pointOnMesh, furniture);
+            PlaceFurniture(pointOnMesh, furniture);
 
             float rot = Input.GetAxis("Mouse ScrollWheel") * speed;
             furniture.transform.Rotate(Vector3.down * rot);
@@ -90,9 +76,7 @@ public class furniturePlacer : MonoBehaviour
             if (Input.GetMouseButtonUp(0))
             {
 
-                GameObject go = Instantiate(furniture, furniture.transform.position, furniture.transform.rotation);
-
-
+                Instantiate(furniture, furniture.transform.position, furniture.transform.rotation);
             }
         }
     }

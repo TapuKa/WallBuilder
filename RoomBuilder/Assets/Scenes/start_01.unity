@@ -25,7 +25,7 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 3
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
+  m_SubtractiveShadowColor: {r: 0.13461196, g: 0.17392966, b: 0.5188679, a: 1}
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
@@ -277,7 +277,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 452009353}
-        m_MethodName: toggleTexture
+        m_MethodName: ToggleTexture
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -289,7 +289,7 @@ MonoBehaviour:
         m_CallState: 1
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &60539335
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,9 +317,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33092f3ad320a9142b2a47eba77e1aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onFloorCursor: {fileID: 1571689830}
+  onFloorCursor: {fileID: 638018516}
   furniture: {fileID: 1266978164}
-  walconstruct: {fileID: 468807659}
+  wallconstruct: {fileID: 468807659}
   toggleFurniture: {fileID: 406484490}
   isPlacingToogle: 0
   furnitureMode: 0
@@ -369,7 +369,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -39.4, y: -99.6}
+  m_AnchoredPosition: {x: -39.89, y: -99.6}
   m_SizeDelta: {x: 10, y: 20}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &100934853
@@ -415,7 +415,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 468807659}
-        m_MethodName: toggleappendToLast
+        m_MethodName: ToggleappendToLast
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -746,14 +746,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: b3265d51b42eb3c4abb1f567af61fa6d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 24d67b5c73ebd7a449d8c13250dcd2c9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -981,7 +981,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.20754719, g: 0.20754719, b: 0.20754719, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -1203,7 +1203,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 60539336}
-        m_MethodName: toggleFurnitureMode
+        m_MethodName: ToggleFurnitureMode
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1246,8 +1246,8 @@ MonoBehaviour:
   wallconstruct: {fileID: 468807659}
   mat1: {fileID: 2100000, guid: 8f5abd0a9f9ae9b4d97dc407da537e1e, type: 2}
   mat2: {fileID: 2100000, guid: d0535d2be6dceb149b02f6cc73b4900a, type: 2}
-  wallPrefab: {fileID: 1687137843245270, guid: c97977fb2c574e64aa7dbe330c026158, type: 2}
-  changeToMaterial: {fileID: 2100000, guid: 8f5abd0a9f9ae9b4d97dc407da537e1e, type: 2}
+  wallPrefab: {fileID: 1443222399652494, guid: a71c1fd5a06f9494fa36483a881bd3df, type: 2}
+  changeToMaterial: {fileID: 2100000, guid: d0535d2be6dceb149b02f6cc73b4900a, type: 2}
   textureToggleOne: {fileID: 47718239}
   textureToggleTwo: {fileID: 1165680372}
 --- !u!4 &452009354
@@ -1321,7 +1321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 1443222399652494, guid: a71c1fd5a06f9494fa36483a881bd3df, type: 2}
-  wallMat: {fileID: 2100000, guid: 8f5abd0a9f9ae9b4d97dc407da537e1e, type: 2}
+  wallMat: {fileID: 2100000, guid: d0535d2be6dceb149b02f6cc73b4900a, type: 2}
   wallSidesMat: {fileID: 2100000, guid: 2a31fe84d304ff249b12b264c1700795, type: 2}
   highlightwallMat: {fileID: 2100000, guid: c7d499de1f14bca4980f6739f8c009a7, type: 2}
   wallTempPrefab: {fileID: 1364788851}
@@ -1334,6 +1334,7 @@ MonoBehaviour:
   extrapreViewsidewallB: {fileID: 763051968}
   extrasidewallA: {fileID: 938983964}
   extrasidewallB: {fileID: 1977613229}
+  appendToggle: {fileID: 100934851}
   buildToggle: {fileID: 1744334989}
   textureOneToggle: {fileID: 47718239}
   textureTwoToggle: {fileID: 1165680372}
@@ -1438,7 +1439,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &498079825
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1454,7 +1455,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -29.900024, y: 36.600006}
+  m_AnchoredPosition: {x: -29.900024, y: 39.61}
   m_SizeDelta: {x: 50, y: 10}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &498079826
@@ -1563,8 +1564,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -6.299988, y: -1.7999878}
-  m_SizeDelta: {x: 160, y: 110}
+  m_AnchoredPosition: {x: -6.9000244, y: -4.9000244}
+  m_SizeDelta: {x: 170, y: 130}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &640744659
 MonoBehaviour:
@@ -1587,7 +1588,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 6
+    m_FontSize: 5
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -1598,11 +1599,12 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Kamerasteuerung:\n  LeftAlt+LMB= Rotate\n  LeftAlt+MMB= Zoom\n  LeftAlt+RMB=Pan\nW\xE4nde
-    bauen:\nLMB Click&Drag auf Boden oder auf bestende Wand. \n\"Stil 1\" oder \"Stil
-    2\" w\xE4hlen um neue Wandstil f\xFCr folgende W\xE4nde \xE4ndern.\n\"Wandstil
-    einzeln \xE4ndern\" um Stil einzelner W\xE4nde im Nachinein zu \xE4ndern\n\nM\xF6bel
-    platzieren:\n- Mouserad um M\xF6bel zu drehen\n- LMB um M\xF6bel zu platzieren\n"
+  m_Text: "Kamerasteuerung:\n  LeftAlt+LMB= Rotate\n  LeftAlt+MMB= Zoom\n  LeftAlt+RMB=Pan\n\n\"W\xE4nde
+    platzieren\": LMB Click&Drag auf Boden oder auf bestehende Wand \n\n\"Stil 1\"
+    oder \"Stil 2\" w\xE4hlen um den Stil f\xFCr neue W\xE4nde zu \xE4ndern\n\n\"Wandstil
+    einzeln \xE4ndern\": um Stil einer einzelnen Wand nachtr\xE4glich zu \xE4ndern\n\n\"Seitenwand/verl\xE4ngern\":
+    Click& Drag auf bestehende Wand oder auf Boden um letzte Wand zu verl\xE4ngern\n\n\"M\xF6bel
+    platzieren\": Mouserad um M\xF6bel zu drehen und LMB um zu platzieren\n"
 --- !u!222 &640744660
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1848,6 +1850,11 @@ Prefab:
     - target: {fileID: 4860870591634228, guid: 3c0085b981dd3f348b59d03ce6a936e0, type: 2}
       propertyPath: m_RootOrder
       value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 65056652237790928, guid: 3c0085b981dd3f348b59d03ce6a936e0,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3c0085b981dd3f348b59d03ce6a936e0, type: 2}
@@ -2394,8 +2401,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 25, y: -3.9}
-  m_SizeDelta: {x: 80, y: 17}
+  m_AnchoredPosition: {x: 25, y: -10}
+  m_SizeDelta: {x: 80, y: 40}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1137464048
 MonoBehaviour:
@@ -2429,7 +2436,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "an letzter anf\xFCgen"
+  m_Text: "Zwischenwand/\nverl\xE4ngern"
 --- !u!222 &1137464049
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2607,7 +2614,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 452009353}
-        m_MethodName: toggleTexture
+        m_MethodName: ToggleTexture
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2619,7 +2626,7 @@ MonoBehaviour:
         m_CallState: 1
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_IsOn: 0
+  m_IsOn: 1
 --- !u!1 &1250277008
 GameObject:
   m_ObjectHideFlags: 0
@@ -2849,7 +2856,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1364788852
 Transform:
   m_ObjectHideFlags: 0
@@ -3000,11 +3007,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 79bcab5af514d1244a7ff6a4f8e2d439, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &1571689830 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1123035023445176, guid: 79bcab5af514d1244a7ff6a4f8e2d439,
-    type: 2}
-  m_PrefabInternal: {fileID: 1571689829}
 --- !u!1 &1572776872
 GameObject:
   m_ObjectHideFlags: 0
@@ -3447,7 +3449,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 468807659}
-        m_MethodName: toggleBuildMode
+        m_MethodName: ToggleBuildMode
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Walls
 {
-
+    public static int ID = 0;
     public Vector3 startMarker;
     public Vector3 endMarker;
     public GameObject wall;
@@ -18,19 +18,24 @@ public class Walls
 
     public static GameObject wallPre;
     public static Material mat1;
-    public int ID { get; private set; }
 
     public Walls(int id, Vector3 start)
     {
         startMarker = start;
         endMarker = start;
         ++id;
-        ID = id;
+        ID++;
         isSideWall = false;
+        wallPre = wall;
+        mat1 = mat;
     }
 
+    public int GetId()
+    {
+        return ID;
+    }
 
-    public void changeMaterial(Material mat, Material sideMat)
+    public void SetTexture(Material mat, Material sideMat)
     {
         GameObject child = wall.transform.GetChild(0).gameObject;
         int numOfChildren = child.transform.childCount;
@@ -52,9 +57,12 @@ public class Walls
         }
     }
 
-    void Start()
+    public void PlaceWall(Walls wl, Vector3 point, int wallId, Material mat1, Material mat2)
     {
-        wallPre = wall;
-        mat1 = mat;
+        wl.endMarker = point;
+        wl.wall.transform.LookAt(wl.endMarker);
+        Vector3 ls = wl.wall.transform.localScale;
+        wl.wall.transform.localScale = new Vector3(ls.x, ls.y, Vector3.Distance(wl.startMarker, wl.endMarker));
+        SetTexture(mat1, mat2);
     }
 }

@@ -6,7 +6,6 @@ using UnityEngine.EventSystems;
 
 public class wallConstruct : MonoBehaviour
 {
-
     RaycastHit findHit = new RaycastHit();
     Vector3 pointOnMesh;
     Vector3 pointStartClick;
@@ -26,13 +25,13 @@ public class wallConstruct : MonoBehaviour
     public GameObject extrapreViewsidewallB;
     public GameObject extrasidewallA;
     public GameObject extrasidewallB;
+    public GameObject appendToggle;
 
     public Toggle buildToggle;
     public Toggle textureOneToggle;
     public Toggle textureTwoToggle;
     public Toggle appendToLast;
     static GameObject wallPre;
-    Vector3 offset;
     float newAlpha;
     float oldAlpha;
     float moveForward;
@@ -60,9 +59,19 @@ public class wallConstruct : MonoBehaviour
     Walls[] wall = new Walls[maxWalls];
 
 
-    public void toggleBuildMode()
+    public void ToggleBuildMode()
     {
         buildmode = buildToggle.isOn;
+        if (buildToggle.isOn)
+        {
+            appendToggle.SetActive(true);
+
+        }
+        else
+        {
+            appendToggle.SetActive(false);
+
+        }
 
     }
     public void toggletexturedMode()
@@ -81,20 +90,11 @@ public class wallConstruct : MonoBehaviour
         }
     }
 
-    public void toggleappendToLast()
+    public void ToggleappendToLast()
     {
         isAppending = appendToLast.isOn;
     }
-    void placeWall(Walls wl)
-    {
-        wl.endMarker = pointOnMesh;
-        wl.wall.transform.LookAt(wl.endMarker);
-        Vector3 ls = wl.wall.transform.localScale;
-        wl.wall.transform.localScale = new Vector3(ls.x, ls.y, Vector3.Distance(wl.startMarker, wl.endMarker));
-        wallcount++;
-    }
-
-    void buildExtraSegments(int wc)
+    void BuildExtraSegments(int wc)
     {
         cornerA = wallTempPrefab.transform.Find("cornerPreA").gameObject;
         cornerB = wallTempPrefab.transform.Find("cornerPreB").gameObject;
@@ -109,10 +109,9 @@ public class wallConstruct : MonoBehaviour
         float extrascaleZ = Vector3.Distance(cornerA.transform.position, cornerC.transform.position);
         Vector3 extrals = wall[wc].extraWallA.transform.localScale;
         extrals.z = extrascaleZ;
-
         wall[wc].extraWallA.transform.localScale = extrals;
-        wall[wc].extraWallA.transform.LookAt(cornerC.transform);
 
+        wall[wc].extraWallA.transform.LookAt(cornerC.transform);
         Vector2 texScale = new Vector2(1, extrals.z / extrals.x);
         if (re.material.name == "wallMatTwo")
         {
@@ -124,7 +123,6 @@ public class wallConstruct : MonoBehaviour
         extrals.z = extrascaleZ;
         re = wall[wc].extraWallB.GetComponent<Renderer>();
         re.material = wall[wc - 1].mat;
-        wall[wc].extraWallB.transform.localScale = extrals;
         wall[wc].extraWallB.transform.LookAt(cornerD.transform);
         texScale = new Vector2(1, extrals.z / extrals.x);
         if (re.material.name == "wallMatTwo")
@@ -154,7 +152,7 @@ public class wallConstruct : MonoBehaviour
         mesh.RecalculateBounds();
     }
 
-    void buildWall(int wc, Vector3 pos)
+    void BuildWall(int wc, Vector3 pos)
     {
         if (isFirstNewWall) //erste click etabliert startpunkt der ersten Wand
         {
@@ -174,8 +172,8 @@ public class wallConstruct : MonoBehaviour
             else
             if (!isSideWall) // zweiter click zur vervollstaendigung der ersten Wand
             {
-                placeWall(wall[wc]);
-                wall[wc].changeMaterial(wallMat, wallSidesMat);
+                wall[wc].PlaceWall(wall[wc], pointOnMesh, wc, wallMat, wallSidesMat);
+                wallcount++;
                 isFirstNewWall = false;
             }
         }
@@ -188,14 +186,14 @@ public class wallConstruct : MonoBehaviour
 
                 if (wc > 0 && !wall[wallcount - 1].isSideWall)
                 {
-                    buildExtraSegments(wc);
-                }
 
+                    BuildExtraSegments(wc);
+                }
                 wall[wc].mat = wallMat;
                 wall[wc].wall.SetActive(false);
-                placeWall(wall[wc]);
+                wall[wc].PlaceWall(wall[wc], pointOnMesh, wc, wallMat, wallSidesMat);
+                wallcount++;
                 wall[wc].angle = wall[wc].wall.transform.eulerAngles.y;
-                wall[wc].changeMaterial(wallMat, wallSidesMat);
             }
         }
 
@@ -214,23 +212,22 @@ public class wallConstruct : MonoBehaviour
         else
         if (isSideWall && !isClickOnWall)// zweiter Click für Wand die an beliebiger Position einer bestehenden Wand ansetzt
         {
-            placeWall(wall[wc]);
+            wall[wc].PlaceWall(wall[wc], pointOnMesh, wc, wallMat, wallSidesMat);
+            wallcount++;
             wall[wc].isSideWall = true;
-            wall[wc].changeMaterial(wallMat, wallSidesMat);
             isSideWall = false;
         }
     }
 
-    void previewWall(Vector3 pos, Vector3 offset)
+    void PreviewWall(Vector3 pos)
     {
         if (wallcount > 0)
         {
             if (!isSideWall)
             {
-                wallTempPrefab.transform.position = pos + offset;
-
+                wallTempPrefab.transform.position = pos;
                 Vector3 ls = wallTempPrefab.transform.localScale;
-                wallTempPrefab.transform.localScale = new Vector3(ls.x, ls.y, Vector3.Distance(wallTempPrefab.transform.position - offset, pointOnMesh));
+                wallTempPrefab.transform.localScale = new Vector3(ls.x, ls.y, Vector3.Distance(wallTempPrefab.transform.position, pointOnMesh));
                 wallTempPrefab.transform.LookAt(pointOnMesh);
                 if (wallTempPrefab.transform.localScale.z > 0)
                 {
@@ -292,7 +289,7 @@ public class wallConstruct : MonoBehaviour
         }
     }
 
-    void showCursor(Vector3 pos, GameObject cursor)
+    void ShowCursor(Vector3 pos, GameObject cursor)
     {
         cursor.transform.position = pos;
     }
@@ -302,11 +299,9 @@ public class wallConstruct : MonoBehaviour
         wallTempPrefab.SetActive(false);
         onWallCursor.SetActive(false);
         onWallCursor.SetActive(false);
-        //   _eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
         wallPre = wallPrefab;
-        // mat1 = wallMat;
         appendToLast.isOn = true;
-        offset = new Vector3(0, 0, 0);
+        
     }
 
     void Update()
@@ -316,8 +311,12 @@ public class wallConstruct : MonoBehaviour
             onWallCursor.SetActive(false);
             wallTempPrefab.SetActive(false);
             onFloorCursor.SetActive(false);
+            extrapreViewsidewallA.SetActive(false);
+            extrapreViewsidewallB.SetActive(false);
+            Cursor.visible = true;
             return;
         }
+        
 
         if (!buildmode || Input.GetKey(KeyCode.LeftAlt)) // nicht im buildmodus
         {
@@ -325,101 +324,119 @@ public class wallConstruct : MonoBehaviour
         }
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray.origin, ray.direction, out findHit))
+        if (!Physics.Raycast(ray.origin, ray.direction, out findHit))
         {
-            pointOnMesh = findHit.point;
+            return;
+        }
+        else
+        {
+            Cursor.visible = false;
+        }
 
-            if (Input.GetMouseButtonDown(0))
+        pointOnMesh = findHit.point;
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (findHit.transform.tag == "floor")
             {
-                if (findHit.transform.tag == "floor")
+                if (isFirstClick)
                 {
-                    if (isFirstClick)
-                    {
-                        pointStartClick = pointOnMesh;
-                        buildWall(wallcount, pointOnMesh);
-                    }                   
-                }
-                else
-                if (findHit.transform.tag == "front" || findHit.transform.tag == "back" || findHit.transform.tag == "side")
-                {
-                    isClickOnWall = true;
                     pointStartClick = pointOnMesh;
-                    buildWall(wallcount, pointStartClick);
-                    wallTempPrefab.SetActive(false);
+                    BuildWall(wallcount, pointOnMesh);
                 }
             }
-            if (Input.GetMouseButtonUp(0))
+            else
+            if (findHit.transform.tag == "front" || findHit.transform.tag == "back" || findHit.transform.tag == "side")
             {
-                if (findHit.transform.tag == "floor" && !isSideWall)  // neue Wand an das Ende der letzten
-                {
-                    if (wallcount > 0)
-                    {
-                        if (isAppending)
-                            buildWall(wallcount, wall[wallcount - 1].endMarker);
-                    }
-                    else
-                        buildWall(wallcount, pointStartClick);
-                }
-                if (isSideWall)                                     //neue Wand an dieSeite einer beliebig  bestehenden
-                {
-                    pointOnMesh.y = 0;
-                    buildWall(wallcount, pointOnMesh);
-                }
+                isClickOnWall = true;
+                pointStartClick = pointOnMesh;
+                BuildWall(wallcount, pointStartClick);
                 wallTempPrefab.SetActive(false);
-                extrapreViewsidewallB.SetActive(false);
-                extrapreViewsidewallA.SetActive(false);
-                wall[wallcount - 1].wall.SetActive(true);
-                isSideWall = false;
             }
+        }
 
-
-            if (findHit.transform.tag == "floor" && !isFirstClick)
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (findHit.transform.tag == "floor" && !isSideWall)  // neue Wand an das Ende der letzten
             {
-                if (wallcount > 0)
+                if (wallcount > 0 && isAppending)
                 {
-                    //                   prevPoint = pointOnMesh;
-                    if (isAppending || isSideWall)
-                    {
-                        extrapreViewsidewallA.transform.position = wallTempPrefab.transform.Find("cornerPreA").gameObject.transform.position;
-                        extrapreViewsidewallB.transform.position = wallTempPrefab.transform.Find("cornerPreB").gameObject.transform.position;
-                        previewWall(wall[wallcount - 1].endMarker, offset);
-                    }
-                    else
-                    {
-                        wallTempPrefab.SetActive(false);
-                        extrapreViewsidewallB.SetActive(false);
-                        extrapreViewsidewallA.SetActive(false);
-                    }
+                    if (isAppending)
+                        BuildWall(wallcount, wall[wallcount - 1].endMarker);
                 }
                 else
+                    if (isAppending)
                 {
-                    previewWall(pointStartClick, Vector3.zero);
+                    BuildWall(wallcount, pointStartClick);
                 }
             }
-            if (findHit.transform.tag == "floor") //Cursor am Boden
+            if (isSideWall)                                     //neue Wand an dieSeite einer beliebig  bestehenden
             {
-                onFloorCursor.SetActive(true);
-                onWallCursor.SetActive(false);
-                showCursor(pointOnMesh, onFloorCursor);
+                pointOnMesh.y = 0;
+                BuildWall(wallcount, pointOnMesh);
             }
+            wallTempPrefab.SetActive(false);
+            extrapreViewsidewallB.SetActive(false);
+            extrapreViewsidewallA.SetActive(false);
+            wall[wallcount - 1].wall.SetActive(true);
+            isSideWall = false;
+        }
 
-            if (findHit.transform.tag == "front" || findHit.transform.tag == "back" || findHit.transform.tag == "side") //Cursor auf Wand
+
+        if (findHit.transform.tag == "floor" && !isFirstClick)
+        {
+            if (wallcount > 0)
             {
-                pointOnMesh.y = 0f;
-                previewWall(pointStartClick, Vector3.zero);
-                if (onFloorCursor && wallTempPrefab)
+                if (isAppending || isSideWall)
+                {
+                    extrapreViewsidewallA.transform.position = wallTempPrefab.transform.Find("cornerPreA").gameObject.transform.position;
+                    extrapreViewsidewallB.transform.position = wallTempPrefab.transform.Find("cornerPreB").gameObject.transform.position;
+                    PreviewWall(wall[wallcount - 1].endMarker);
+                }
+                else
                 {
                     wallTempPrefab.SetActive(false);
                     extrapreViewsidewallB.SetActive(false);
                     extrapreViewsidewallA.SetActive(false);
                 }
+            }
+            else
+            {
+                PreviewWall(pointStartClick);
+            }
+        }
+        if (findHit.transform.tag == "floor") //Cursor am Boden
+        {
+            onFloorCursor.SetActive(true);
+            Renderer re = onFloorCursor.GetComponent<Renderer>();
+            if (!isAppending && !isSideWall)
+            {
+                re.material.color = Color.red;
+            }
+            else
+            {
+                re.material.color = Color.green;
+            }
 
-                onFloorCursor.SetActive(false);
+            onWallCursor.SetActive(false);
+            ShowCursor(pointOnMesh, onFloorCursor);
+        }
+
+        if (findHit.transform.tag == "front" || findHit.transform.tag == "back" || findHit.transform.tag == "side") //Cursor auf Wand
+        {
+            pointOnMesh.y = 0f;
+            PreviewWall(pointStartClick);
+            if (onFloorCursor && wallTempPrefab)
+            {
+                wallTempPrefab.SetActive(false);
                 extrapreViewsidewallB.SetActive(false);
                 extrapreViewsidewallA.SetActive(false);
-                onWallCursor.SetActive(true);
-                showCursor(pointOnMesh, onWallCursor);
             }
+
+            onFloorCursor.SetActive(false);
+            extrapreViewsidewallB.SetActive(false);
+            extrapreViewsidewallA.SetActive(false);
+            onWallCursor.SetActive(true);
+            ShowCursor(pointOnMesh, onWallCursor);
         }
     }
 }
